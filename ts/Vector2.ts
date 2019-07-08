@@ -59,6 +59,12 @@ namespace PageCurl{
 			return this.x + "," + this.y;
 		}
 
+		public set = (x:number, y:number):Vector2=>{
+			this.x = x;
+			this.y = y;
+			return this;
+		}
+
 		public clone = ():Vector2 =>{
 			return new Vector2(this.x, this.y);
 		}

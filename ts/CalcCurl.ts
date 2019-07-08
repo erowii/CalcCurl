@@ -7,16 +7,11 @@ namespace PageCurl{
 		protected pageContainer:IDisplayObject;
 		protected showPage:IDisplayObject;
 		protected mask:IDisplayObject;
-		protected devicePixelRatio:number = 1;
 
 		constructor(width:number, height:number) {
 			this.width = width;
 			this.height = height;
 			this.originPoint = new Vector2(0, 0);
-
-			if (window.devicePixelRatio){
-				this.devicePixelRatio = window.devicePixelRatio;
-			}
 		}
 
 		public startClick = (v:Vector2)=>{

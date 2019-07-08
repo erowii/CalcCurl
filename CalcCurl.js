@@ -45,6 +45,11 @@ var PageCurl;
             this.toString = () => {
                 return this.x + "," + this.y;
             };
+            this.set = (x, y) => {
+                this.x = x;
+                this.y = y;
+                return this;
+            };
             this.clone = () => {
                 return new Vector2(this.x, this.y);
             };
@@ -58,7 +63,6 @@ var PageCurl;
 (function (PageCurl) {
     class CalcCurl {
         constructor(width, height) {
-            this.devicePixelRatio = 1;
             this.startClick = (v) => {
                 this.startPoint = v;
                 this.calcCurl(this.startPoint);
@@ -85,9 +89,6 @@ var PageCurl;
             this.width = width;
             this.height = height;
             this.originPoint = new PageCurl.Vector2(0, 0);
-            if (window.devicePixelRatio) {
-                this.devicePixelRatio = window.devicePixelRatio;
-            }
         }
     }
     PageCurl.CalcCurl = CalcCurl;
@@ -99,13 +100,14 @@ var PageCurl;
     var Rectangle = createjs.Rectangle;
     var Shape = createjs.Shape;
     class PokerCurl extends PageCurl.CalcCurl {
+        // private offsetX:number = 0;
+        // private offsetY:number = 0;
         constructor(lib_PokerCard) {
             super(300, 458);
             this.pokerContainer = new Container();
             this.clickAreasName = ["leftTop", "rightTop", "leftBottom", "rightBottom", "top", "Bottom", "left", "right"];
             this.debugLineSize = 5;
-            this.offsetX = 0;
-            this.offsetY = 0;
+            this.offset = new PageCurl.Vector2(0, 0);
             this.initOriginPoints = () => {
                 this.originPoints = [
                     new PageCurl.Vector2(0, 0),
@@ -193,19 +195,19 @@ var PageCurl;
                         break;
                     case "top":
                         this.originPoint.y = 0;
-                        this.originPoint.x = localPoint.x - this.offsetX;
+                        this.originPoint.x = localPoint.x - this.offset.x;
                         break;
                     case "Bottom":
                         this.originPoint.y = this.height;
-                        this.originPoint.x = localPoint.x - this.offsetX;
+                        this.originPoint.x = localPoint.x - this.offset.x;
                         break;
                     case "left":
                         this.originPoint.x = 0;
-                        this.originPoint.y = localPoint.y - this.offsetY;
+                        this.originPoint.y = localPoint.y - this.offset.y;
                         break;
                     case "right":
                         this.originPoint.x = this.width;
-                        this.originPoint.y = localPoint.y - this.offsetY;
+                        this.originPoint.y = localPoint.y - this.offset.y;
                         break;
                 }
             };
@@ -222,16 +224,23 @@ var PageCurl;
             };
             this.onPressMoveHandle = (evt) => {
                 let localPoints = this.pokerBack.globalToLocal(evt.stageX, evt.stageY);
-                this.offsetX = localPoints.x - this.startPoint.x;
-                this.offsetY = localPoints.y - this.startPoint.y;
-                this.daggle(new PageCurl.Vector2(this.startPoint.x + this.offsetX, this.startPoint.y + this.offsetY));
+                let localPointsV2 = new PageCurl.Vector2(localPoints.x, localPoints.y);
+                this.offset.set(localPoints.x - this.startPoint.x, localPoints.y - this.startPoint.y);
+                let offsetX = localPoints.x - this.startPoint.x;
+                let offsetY = localPoints.y - this.startPoint.y;
+                console.log(this.offset.toString());
+                // console.log(new Vector2(this.startPoint.x + offsetX, this.startPoint.y + offsetY).toString());
+                // console.log(this.startPoint.clone().add(this.offset).toString());
+                this.daggle(this.startPoint.clone().add(this.offset));
+                // this.daggle(new Vector2(this.startPoint.x + this.offsetX, this.startPoint.y + this.offsetY));
                 this.updatePokerShadow();
             };
             this.onPressUpHandle = (evt) => {
                 this.pokerBack.mask = null;
                 this.poker.visible = false;
                 this.pokerShadow.visible = false;
-                this.offsetX = this.offsetY = 0;
+                this.offset.set(0, 0);
+                // this.offsetX = this.offsetY = 0;
             };
             this.updatePokerShadow = () => {
                 this.pokerShadow.x = this.mask.x;

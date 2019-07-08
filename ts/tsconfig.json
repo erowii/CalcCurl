@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "module": "amd",
+    "target": "ES6",
+    "declaration": false,
+    "sourceMap": false,
+    "rootDir": "./src/ts/ts",
+    "outFile": "../CalcCurl.js"
+  },
+  "files": [
+    "IDisplayObject.ts",
+    "Vector2.ts",
+    "CalcCurl.ts",
+    "PokerCurl.ts",
+    "main.ts"
+  ]
+}
